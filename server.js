@@ -1,15 +1,15 @@
+const express = require('express');
 const dotenv = require('dotenv');
-dotenv.config({ path: './.env', quiet: true });
+const chalk = require("chalk");
 const morgan = require('morgan');
 
-const chalk = require("chalk");
+// DOTENV CONFIG
+dotenv.config({ path: './.env', quiet: true });
 
-
-// EXPRESS CONFIG
-const express = require('express');
+// FILE IMPORTS
 const connectDb = require('./configs/db');
 
-
+// EXPRESS CONFIG
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -21,10 +21,7 @@ app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 
 
-
-app.get("/", (req, res) => {
-    res.send("<h1> Sever is Live </h1>");
-})
+// ROUTES
 
 
 
