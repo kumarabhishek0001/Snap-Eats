@@ -7,9 +7,14 @@ const chalk = require("chalk");
 
 // EXPRESS CONFIG
 const express = require('express');
+const connectDb = require('./configs/db');
+
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// CONNECTING TO DB
+connectDb();
 
 // MIDDLEWARE
 app.use(express.json());
