@@ -22,7 +22,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 
 // ROUTES
-
+app.use('/api/v1/testRoute', require('./routes/testRoutes'));
 
 
 app.listen(PORT, () => {
