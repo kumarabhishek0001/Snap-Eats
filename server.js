@@ -8,13 +8,18 @@ dotenv.config({ path: './.env', quiet: true });
 
 // FILE IMPORTS
 const connectDb = require('./configs/db');
+const verifyMail = require('./configs/verify');
+
 
 // EXPRESS CONFIG
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.BACKEND_PORT || 8080;
 
 // CONNECTING TO DB
 connectDb();
+
+// VERIFY MAIL SERVICE WORKING
+verifyMail();
 
 // MIDDLEWARE
 app.use(express.json());

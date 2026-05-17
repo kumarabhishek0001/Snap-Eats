@@ -1,5 +1,9 @@
-const chalk = require("chalk");
 const userModel = require("../models/userModel");
+const sendRegisterationMail = require("../service/sendMail");
+
+
+const chalk = require("chalk");
+
 
 const registerController = async (req, res) => {
 
@@ -37,9 +41,11 @@ const registerController = async (req, res) => {
             profile
         })
 
+        sendRegisterationMail(email)
+
         res.status(201).json({
             success: true,
-            message: "user created successfully"
+            message: "User created successfully. Please open you registered mail and verify"
         })
 
 
