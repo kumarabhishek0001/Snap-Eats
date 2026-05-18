@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema({
     },
     verificationOTP: {
         type: Number,
-        required: [true, 'App not implementing OTP']
     }
 
 },

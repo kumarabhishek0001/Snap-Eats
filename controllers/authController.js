@@ -79,6 +79,80 @@ const registerController = async (req, res) => {
 
 }
 
+const verifyUserController = async (req, res) => {
+
+
+    try {
+
+        const { email, password, otp } = req.body;
+
+        // VALIDATION
+        if (!email || !password || !otp) {
+            return res.status(400).json({
+                success: false,
+                error: "BAD REQUEST",
+                message: "All fields are required"
+            })
+        }
+
+        // GET USER
+        const user = await userModel.findOne({ email });
+        // console.log(chalk.yellow("user: "), user)
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: "RESOURCE NOT FOUND",
+                message: "Invalid credentials"
+            })
+        };
+        // console.log(chalk.yellow("password: ", password, "ecrypted: ", user.password))
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                error: "UNAUTHORIZED",
+                message: "Invalid credentials"
+            })
+        };
+
+        const isOTPMatch = otp === user.verificationOTP;
+
+        if (!isOTPMatch) {
+            return res.status(401).json({
+                success: false,
+                error: "UNAUTHORIZED",
+                message: "Invalid credentials"
+            })
+        }
+
+        // UPDATE THE DB
+        user.isVerified = true;
+        user.verificationOTP = undefined;
+
+        await user.save();
+
+
+        res.status(200).json({
+            success: true,
+            message: "User verified successfully"
+        })
+
+    } catch (error) {
+        console.log(chalk.bgRed("Error in verify User"));
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "INTERNAL SERVER ERROR",
+            message: "Please try again after some time"
+        })
+    }
+
+
+
+}
+
 const loginController = async (req, res) => {
 
 
@@ -152,4 +226,4 @@ const loginController = async (req, res) => {
 };
 
 
-module.exports = { registerController, loginController }
+module.exports = { registerController, loginController, verifyUserController }
