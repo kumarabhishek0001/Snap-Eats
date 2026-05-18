@@ -3,7 +3,8 @@ const JWT = require('jsonwebtoken');
 
 
 const userModel = require("../models/userModel");
-const sendRegisterationMail = require("../service/sendMail");
+const { sendRegisterationMail, sendVerifiedMail } = require("../service/sendMail");
+
 
 
 const chalk = require("chalk");
@@ -119,7 +120,7 @@ const verifyUserController = async (req, res) => {
                 message: "Invalid credentials"
             })
         };
-
+        // console.log(chalk.yellow("otp: ", otp, "encrypted: ", user.verificationOTP))
         const isOTPMatch = await bcrypt.compare(String(otp), user.verificationOTP)
 
         if (!isOTPMatch) {
@@ -134,7 +135,10 @@ const verifyUserController = async (req, res) => {
         user.isVerified = true;
         user.verificationOTP = undefined;
 
+        const recipient_email = user.email;
         await user.save();
+
+        sendVerifiedMail(recipient_email);
 
 
         res.status(200).json({
