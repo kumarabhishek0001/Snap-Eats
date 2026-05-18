@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
         default: false,
     },
     verificationOTP: {
-        type: Number,
+        type: String
     }
 
 },

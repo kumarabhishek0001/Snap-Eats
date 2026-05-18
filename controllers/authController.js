@@ -38,13 +38,16 @@ const registerController = async (req, res) => {
             })
         }
 
-        const salt = await bcrypt.genSalt(10);
+        let salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // GENERATE OTP
         const otp = generateOTP();
         console.log(chalk.yellow(`OTP: ${otp}`));
 
+        // HASHING OTP
+        salt = await bcrypt.genSalt(10);
+        const hashedOTP = await bcrypt.hash(String(otp), salt)
 
         const user = await userModel.create({
             username,
@@ -53,7 +56,7 @@ const registerController = async (req, res) => {
             address,
             userType,
             profile,
-            verificationOTP: otp
+            verificationOTP: hashedOTP
         })
 
         // SEND VERIFICATION EMAIL
@@ -117,7 +120,7 @@ const verifyUserController = async (req, res) => {
             })
         };
 
-        const isOTPMatch = otp === user.verificationOTP;
+        const isOTPMatch = await bcrypt.compare(String(otp), user.verificationOTP)
 
         if (!isOTPMatch) {
             return res.status(401).json({
