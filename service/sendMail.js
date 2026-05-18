@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer");
 const transporter = require("../configs/transporter");
 
 
-const sendRegisterationMail = async (mail_reciever) => {
+const sendRegisterationMail = async (mail_reciever, otp) => {
     try {
 
         console.log("Sending email")
@@ -15,7 +15,25 @@ const sendRegisterationMail = async (mail_reciever) => {
             to: mail_reciever, // list of recipients
             subject: "Verification", // subject line
             text: "Please verify yourself. Your One Time Password(OTP) is 123456", // plain text body
-            html: "<h1>Thank you for choosing us!!<h1>", // HTML body
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h1>Thank you for choosing us!!</h1>
+
+                    <p>Your OTP for verification is:</p>
+
+                    <h2 style="
+                        background-color: #f4f4f4;
+                        display: inline-block;
+                        padding: 10px 20px;
+                        border-radius: 8px;
+                        letter-spacing: 3px;
+                    ">
+                        ${otp}
+                    </h2>
+
+                    <p>This OTP will expire in 5 minutes.</p>
+                </div>
+            `, // HTML body
         });
 
         console.log("Message sent: %s", info.messageId);

@@ -5,7 +5,7 @@ const { transporter } = require("./transporter");
 const verifyMail = async () => {
     try {
         await transporter.verify();
-        console.log(chalk.bgBlue("Server is ready to take our messages"));
+        console.log(chalk.bgBlue("Server is ready to send email"));
 
     } catch (err) {
         console.error("Verification failed:", err);

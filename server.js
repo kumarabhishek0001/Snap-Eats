@@ -19,7 +19,7 @@ const PORT = process.env.BACKEND_PORT || 8080;
 connectDb();
 
 // VERIFY MAIL SERVICE WORKING
-// verifyMail();
+verifyMail();
 
 // MIDDLEWARE
 app.use(express.json());

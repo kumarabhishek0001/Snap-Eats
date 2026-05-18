@@ -7,6 +7,7 @@ const sendRegisterationMail = require("../service/sendMail");
 
 
 const chalk = require("chalk");
+const generateOTP = require('../utils/generateOTP');
 
 
 const registerController = async (req, res) => {
@@ -15,6 +16,7 @@ const registerController = async (req, res) => {
     try {
 
         const { username, email, password, address, userType, profile } = req.body;
+        // console.log(chalk.red('user input check: ', username))
 
         // VALIDATION
         if (!username || !email || !password || !address || !userType || !profile) {
@@ -37,7 +39,11 @@ const registerController = async (req, res) => {
         }
 
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt)
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // GENERATE OTP
+        const otp = generateOTP();
+        console.log(chalk.yellow(`OTP: ${otp}`));
 
 
         const user = await userModel.create({
@@ -46,11 +52,12 @@ const registerController = async (req, res) => {
             password: hashedPassword,
             address,
             userType,
-            profile
+            profile,
+            verificationOTP: otp
         })
 
         // SEND VERIFICATION EMAIL
-        // sendRegisterationMail(email)
+        sendRegisterationMail(email, otp);
 
         res.status(201).json({
             success: true,

@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema({
     profile: {
         type: String,
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2yGDr34mjFWlbLRGMxLIhAoPCC5vmMvDEbVm6cSZLeNw-n0eWNj-2wls&s"
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    verificationOTP: {
+        type: Number,
+        required: [true, 'App not implementing OTP']
     }
 
 },
