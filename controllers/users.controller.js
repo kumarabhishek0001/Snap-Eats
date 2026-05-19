@@ -241,4 +241,38 @@ const resetPasswordController = async (req, res) => {
 
 }
 
-module.exports = { getUser, updateUserController, updateUserPassword, forgetPasswordController, resetPasswordController };
+const deletUserController = async (req, res) => {
+
+    try {
+
+        const userId = req.id;
+
+        const user = await userModel.findByIdAndDelete(userId);
+        console.log(user)
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: "USER NOT FOUND"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User deleted successfully"
+        });
+
+    } catch (error) {
+
+        console.log(chalk.bgRed("delete user controller error"));
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "INTERNAL SERVER ERROR",
+            message: "Please try again after some time"
+        })
+
+    }
+}
+
+module.exports = { getUser, updateUserController, updateUserPassword, forgetPasswordController, resetPasswordController, deletUserController };
