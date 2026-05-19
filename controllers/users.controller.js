@@ -1,5 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const userModel = require("../models/userModel");
+const generateOTP = require("../utils/generateOTP");
+const { sendPasswordResetMail } = require("../service/sendMail");
 
 const chalk = require("chalk");
 const bcrypt = require("bcrypt");
@@ -126,5 +128,58 @@ const updateUserPassword = async (req, res) => {
     }
 }
 
+const forgetPasswordController = async (req, res) => {
 
-module.exports = { getUser, updateUserController, updateUserPassword, resetPasswordController };
+    try {
+
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                error: "BAD REQUEST",
+                message: "all fields are mandatory"
+            })
+
+        }
+        const user = await userModel.findOne({ email });
+
+        if (user) {
+
+            const otp = generateOTP();
+            console.log(chalk.yellow("otp: ", otp));
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedOTP = await bcrypt.hash(String(otp), salt);
+
+            user.resetPasswordOTP = hashedOTP;
+            await user.save();
+
+            await sendPasswordResetMail(email, otp);
+
+        }
+
+
+
+        res.status(200).json({
+            success: true,
+            message: "If your email is registered. You will get otp"
+        })
+
+
+    } catch (error) {
+
+        console.log(chalk.bgRed("forgot password controller error"));
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "INTERNAL SERVER ERROR",
+            message: "Please try again after some time"
+        })
+
+    }
+}
+
+
+
+module.exports = { getUser, updateUserController, updateUserPassword, forgetPasswordController, };

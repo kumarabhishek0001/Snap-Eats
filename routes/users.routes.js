@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUser, updateUserController, updateUserPassword, resetPasswordController } = require('../controllers/users.controller');
+const { getUser, updateUserController, updateUserPassword, forgetPasswordController } = require('../controllers/users.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 
 const router = express.Router();
@@ -14,7 +14,9 @@ router.put('/updateUser', authMiddleware, updateUserController)
 // UPDATE PASSWORD || PUT
 router.put('/updatePassword', authMiddleware, updateUserPassword);
 
-// RESET PASSWORD || PUT
-router.post('/resetPassword', authMiddleware, resetPasswordController)
+// FORGOT PASSWORD PASSWORD || POST
+router.post('/forgetPassword', forgetPasswordController);
+
+
 
 module.exports = router;

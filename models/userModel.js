@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     },
     verificationOTP: {
         type: String
+    },
+    resetPasswordOTP: {
+        type: String,
+        default: null
     }
 
 },
