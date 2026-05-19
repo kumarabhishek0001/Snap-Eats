@@ -180,6 +180,65 @@ const forgetPasswordController = async (req, res) => {
     }
 }
 
+const resetPasswordController = async (req, res) => {
+
+    try {
+
+        const { email, newPassword, otp } = req.body;
+
+        if (!email || !newPassword || !otp) {
+            return res.status(400).json({
+                success: false,
+                error: "BAD REQUEST",
+                message: "all fields are required"
+            })
+        }
+
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+
+            return res.status(404).json({
+                success: false,
+                error: "Not found",
+                message: "Invalid credentials"
+            })
+
+        }
+
+        const isMatch = bcrypt.compare(String(otp), user.resetPasswordOTP);
+
+        if (!isMatch) {
+
+            return res.status(401).json({
+                success: false,
+                error: "UNAUTHROIZED",
+                message: "Invalid credentials"
+            })
+
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Password Updated successfully"
+        })
 
 
-module.exports = { getUser, updateUserController, updateUserPassword, forgetPasswordController, };
+    } catch (error) {
+        console.log(chalk.bgRed("reset password controller error"));
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "INTERNAL SERVER ERROR",
+            message: "Please try again after some time"
+        })
+    }
+
+}
+
+module.exports = { getUser, updateUserController, updateUserPassword, forgetPasswordController, resetPasswordController };
