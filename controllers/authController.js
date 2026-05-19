@@ -166,8 +166,8 @@ const loginController = async (req, res) => {
     try {
 
         const { username, password } = req.body;
-        console.log("username: ", username);
-        console.log("password: ", password);
+        // console.log("username: ", username);
+        // console.log("password: ", password);
 
         // VALIDATION
         if (!username || !password) {
@@ -189,7 +189,7 @@ const loginController = async (req, res) => {
             });
         };
 
-        console.log(chalk.green(user._id));
+        // console.log(chalk.green(user._id));
 
 
         // VERIFY USER PASSWORD
